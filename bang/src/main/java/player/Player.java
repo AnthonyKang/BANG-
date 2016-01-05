@@ -12,6 +12,6 @@ public class Player {
     private int life;
     private boolean jailed;
     private boolean dynamite;
-    private ArrayList<Card> hand;
-    private HashSet<Card> field;
+    private final ArrayList<Card> hand;
+    private final HashSet<Card> field;
 }
