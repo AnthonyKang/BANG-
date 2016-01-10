@@ -8,5 +8,6 @@ public abstract class Card {
     private final int number;
     private final Suit suit;
     private final String name;
+    private final String description;
     private final String effect;
 }

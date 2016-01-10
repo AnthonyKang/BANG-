@@ -1,5 +1,5 @@
 package game.cards;
 
 public enum CardColor {
-    BROWN, GREEN, BLUE
+    BROWN, GREEN, BLUE, OTHER
 }
