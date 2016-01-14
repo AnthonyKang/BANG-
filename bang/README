@@ -1,0 +1,6 @@
+To run server:
+mvn jetty:run
+
+To run client:
+Open test.html
+

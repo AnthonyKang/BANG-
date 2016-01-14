@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+	
+      <script type="text/javascript">
+         // Let us open a web socket
+         var ws = new WebSocket("ws://localhost:8080/test");
+
+         function send() {
+            ws.send("test");
+         }
+            
+         ws.onmessage = function (evt) 
+         { 
+            var received_msg = evt.data;
+            var para = document.createElement("p");
+            para.appendChild(document.createTextNode(received_msg));
+            var element = document.getElementById("sse");
+            element.appendChild(para);
+         };
+            
+         ws.onclose = function()
+         { 
+            // websocket is closed.
+            alert("Connection is closed..."); 
+         };
+      </script>
+		
+   </head>
+   <body>
+   
+      <div id="sse">
+         <a href="javascript:send()">Run WebSocket</a>
+      </div>
+      
+   </body>
+</html>
