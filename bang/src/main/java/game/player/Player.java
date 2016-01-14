@@ -1,7 +1,7 @@
 package game.player;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
 
 import game.cards.Card;
 import lombok.Data;
@@ -11,10 +11,31 @@ public class Player {
     private final Role role;
     private final Character character;
     private int life;
-    private boolean jailed;
-    private boolean dynamite;
-    private final ArrayList<Card> hand;
-    private final HashSet<Card> field;
+    private Card weapon;
+    private Card jail;
+    private Card dynamite;
+    private final List<Card> hand;
+    private final List<Card> field;
+
+    /**
+     * Constructor for player
+     * 
+     * @param role
+     *            player's role
+     * @param character
+     *            player's character
+     */
+    public Player(Role role, Character character) {
+        this.role = role;
+        this.character = character;
+        // initial life = character max life (+1 if player is sheriff)
+        this.life = getPlayerMaxLife();
+        this.weapon = null;
+        this.jail = null;
+        this.dynamite = null;
+        this.hand = new ArrayList<>();
+        this.field = new ArrayList<>();
+    }
 
     /**
      * Adds card to player's hand or field
@@ -43,17 +64,31 @@ public class Player {
     }
 
     /**
-     * Start player's turn.
+     * Check if player is dead
+     * 
+     * @return true if dead
      */
-    public void startTurn() {
-        // TODO
+    public boolean isDead() {
+        return life == 0;
     }
 
     /**
-     * Ends player's turn
+     * Returns player's max life
+     * 
+     * @return player's max life
      */
-    public void endTurn() {
-        // TODO
+    public int getPlayerMaxLife() {
+        return character.getMaxLife() + (role == Role.SHERIFF ? 1 : 0);
+    }
+
+    /**
+     * Heals player by specified amount
+     * 
+     * @param amount
+     *            heal amount
+     */
+    public void heal(int amount) {
+        this.life = Math.max(life + amount, getPlayerMaxLife());
     }
 
     /**
@@ -67,11 +102,47 @@ public class Player {
     }
 
     /**
+     * Removes jail card from player
+     * 
+     * @return
+     *         jail card
+     */
+    public Card removeJail() {
+        // TODO: check if jail exists?
+        Card jail = getJail();
+        this.jail = null;
+        return jail;
+    }
+
+    /**
+     * Removes dynamite card from player
+     * 
+     * @return
+     *         dynamite card
+     */
+    public Card removeDynamite() {
+        // TODO: check if dynamite exists?
+        Card dynamite = getDynamite();
+        this.dynamite = null;
+        return dynamite;
+    }
+
+    /**
      * Returns how many discards player needs to make
      * 
      * @return number of discards
      */
     public int checkNumDiscards() {
         return Math.max(life - hand.size(), 0);
+    }
+
+    /**
+     * Damage player for specified amount
+     * 
+     * @param amount
+     *            amount of damage
+     */
+    public void damage(int amount) {
+        this.life = Math.max(0, life - amount);
     }
 }

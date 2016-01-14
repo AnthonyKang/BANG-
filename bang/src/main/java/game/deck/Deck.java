@@ -1,6 +1,5 @@
 package game.deck;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -29,12 +28,15 @@ public class Deck {
     }
 
     private final Stack<Card> deck;
-    private final List<Card> discard;
+    private final Stack<Card> discard;
+    private final Stack<Card> specialCards; // High Noon and Fistful of Cards
 
     public Deck() {
         deck = new Stack<>();
-        discard = new ArrayList<>();
+        discard = new Stack<>();
+        specialCards = new Stack<>();
         initializeDeck();
+        initializeSpecialCards();
     }
 
     /**
@@ -42,12 +44,27 @@ public class Deck {
      */
     private void initializeDeck() {
         Map<String, String> cardLists = CardLists.getCardLists();
-        cardLists.entrySet().stream().forEach(x -> {
-            CardListParser parser = new CardListParser(x.getKey(), x.getValue());
-            List<Card> cards = parser.getCards();
-            deck.addAll(cards);
-        });
+        cardLists.entrySet().stream().filter(x -> !x.getKey().equals("High Noon") && !x.getKey().equals("Fistful"))
+                .forEach(x -> {
+                    CardListParser parser = new CardListParser(x.getKey(), x.getValue());
+                    List<Card> cards = parser.getCards();
+                    deck.addAll(cards);
+                });
         shuffle(false);
+    }
+
+    /**
+     * Build deck for High Noon and Fistful of Cards card lists.
+     */
+    private void initializeSpecialCards() {
+        Map<String, String> cardLists = CardLists.getCardLists();
+        cardLists.entrySet().stream().filter(x -> x.getKey().equals("High Noon") || x.getKey().equals("Fistful"))
+                .forEach(x -> {
+                    CardListParser parser = new CardListParser(x.getKey(), x.getValue());
+                    List<Card> cards = parser.getCards();
+                    specialCards.addAll(cards);
+                });
+        Collections.shuffle(specialCards);
     }
 
     /**
