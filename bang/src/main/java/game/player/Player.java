@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.cards.Card;
+import game.cards.CardColor;
 import lombok.Data;
 
 @Data
 public class Player {
-    private final Role role;
-    private final Character character;
+    private Role role;
+    private Character character;
     private int life;
     private Card weapon;
     private Card jail;
@@ -38,15 +39,44 @@ public class Player {
     }
 
     /**
+     * Constructor for no parameters (used mainly for testing purposes)
+     */
+    public Player() {
+        this.role = null;
+        this.character = null;
+        // initial life = character max life (+1 if player is sheriff)
+        this.life = 0;
+        this.weapon = null;
+        this.jail = null;
+        this.dynamite = null;
+        this.hand = new ArrayList<>();
+        this.field = new ArrayList<>();
+    }
+
+    /**
      * Adds card to player's hand or field
      * 
      * @param card
      *            card to add
-     * @param field
+     * @param toField
      *            true for field, false for hand
+     * @return
+     *         true if success
      */
-    public void addCard(Card card, boolean field) {
-        // TODO
+    public boolean addCard(Card card, boolean toField) {
+        if (toField) {
+            if (card.getColor() == CardColor.BROWN) {
+                return false;
+            }
+            if (isDuplicateField(card)) {
+                return false;
+            }
+            field.add(card);
+        }
+        else {
+            hand.add(card);
+        }
+        return true;
     }
 
     /**
@@ -54,13 +84,19 @@ public class Player {
      * 
      * @param card
      *            card to discard
-     * @param field
+     * @param fromField
      *            true for field, false for hand
-     * @return discarded card
+     * @return discarded card; null if card does not exist
      */
-    public Card discardCard(Card card, boolean field) {
-        // TODO
-        return null;
+    public Card discardCard(Card card, boolean fromField) {
+        boolean success = false;
+        if (fromField) {
+            success = field.remove(card);
+        }
+        else {
+            success = hand.remove(card);
+        }
+        return success ? card : null;
     }
 
     /**
@@ -144,5 +180,13 @@ public class Player {
      */
     public void damage(int amount) {
         this.life = Math.max(0, life - amount);
+    }
+
+    /**
+     * Check for duplicate field card
+     */
+    private boolean isDuplicateField(Card card) {
+        String cardName = card.getName();
+        return field.stream().anyMatch(x -> x.getName().equals(cardName));
     }
 }

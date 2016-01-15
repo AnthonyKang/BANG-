@@ -3,7 +3,7 @@ package game.cards;
 import lombok.Data;
 
 @Data
-public abstract class Card {
+public class Card {
     private final CardColor color;
     private final int number;
     private final Suit suit;
