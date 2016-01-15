@@ -9,7 +9,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-@ServerEndpoint("/test")
+@ServerEndpoint("/testsocket")
 public class TestSocket {
     public Session session;
 
@@ -17,18 +17,18 @@ public class TestSocket {
     public void onOpen(Session session) {
         this.session = session;
         System.out.println("WebSocket opened: " + session.getId());
-        Server.getInstance().join(this);
+        TestServer.getInstance().join(this);
     }
 
     @OnMessage
-    public void onMessage(String txt, Session session) throws IOException {
-        System.out.println("Message received: " + txt);
-        Server.getInstance().sendAll(txt);
+    public void onMessage(String message, Session session) throws IOException {
+        System.out.println("Message received: " + message);
+        TestServer.getInstance().sendAll(message);
     }
 
     @OnClose
     public void onClose(CloseReason reason, Session session) {
         System.out.println("Closing a WebSocket due to " + reason.getReasonPhrase());
-        Server.getInstance().part(this);
+        TestServer.getInstance().part(this);
     }
 }

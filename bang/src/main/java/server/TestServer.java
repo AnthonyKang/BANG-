@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Server {
-    private static final Server INSTANCE = new Server();
+public class TestServer {
+    private static final TestServer INSTANCE = new TestServer();
     private static Set<TestSocket> sockets = new HashSet<>();
 
-    public static Server getInstance() {
+    public static TestServer getInstance() {
         return INSTANCE;
     }
 
