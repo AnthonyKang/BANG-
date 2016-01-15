@@ -2,5 +2,5 @@ To run server:
 mvn jetty:run
 
 To run client:
-Open test.html
-
+Open test.html. (Open multiple for multiple clients)
+Click link to send message to server.  Server sends back same message to all connected clients.  Message appears on all pages.
