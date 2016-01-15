@@ -14,7 +14,7 @@ public class TestSocket {
     public Session session;
 
     @OnOpen
-    public void onOpen(Session session) {
+    public void onOpen(Session session) throws IOException {
         this.session = session;
         System.out.println("WebSocket opened: " + session.getId());
         TestServer.getInstance().join(this);
@@ -27,7 +27,7 @@ public class TestSocket {
     }
 
     @OnClose
-    public void onClose(CloseReason reason, Session session) {
+    public void onClose(CloseReason reason, Session session) throws IOException {
         System.out.println("Closing a WebSocket due to " + reason.getReasonPhrase());
         TestServer.getInstance().part(this);
     }

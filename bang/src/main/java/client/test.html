@@ -1,36 +1,84 @@
 <!DOCTYPE HTML>
 <html>
    <head>
-	
-      <script type="text/javascript">
-         // Let us open a web socket
-         var ws = new WebSocket("ws://localhost:8080/test");
+	   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>		
+   </head>
 
-         function send() {
-            ws.send("test");
+   <body>
+      <script type="text/javascript">
+         var ws
+         var selfname = ""
+
+         function connect() {
+            // open a web socket
+            ws = new WebSocket("ws://localhost:8080/testsocket");
+            
+            ws.onopen = function() {
+               $("p#status").text("Status = Connected");
+            }
+
+            ws.onmessage = function (evt) {
+               var msg = evt.data;
+               var obj = JSON.parse(msg);
+               console.log("message type: " + obj.msgType);
+               if (obj.msgType === "connected") {
+                  selfname = obj.username;
+                  $("p#selfname").text("Username = " + selfname);
+               }
+               else if (obj.msgType === "userlist") {
+                  console.log("update user list");
+                  update_list(obj.userlist)
+               }
+            };
+               
+            ws.onclose = function() { 
+               // websocket is closed.
+               $("p#status").text("Status = Disconnected");
+               $("p#selfname").text("Username = ");
+            };
          }
             
-         ws.onmessage = function (evt) 
-         { 
-            var received_msg = evt.data;
-            var para = document.createElement("p");
-            para.appendChild(document.createTextNode(received_msg));
-            var element = document.getElementById("sse");
-            element.appendChild(para);
-         };
-            
-         ws.onclose = function()
-         { 
-            // websocket is closed.
-            alert("Connection is closed..."); 
-         };
+         function disconnect() {
+            ws.close();           
+            $("p#status").text("Status = Disconnected");
+
+            var list = $("ol#list");
+            list.empty();
+         }
+
+         var update_list = function(user_list) {
+            var list = $("ol#list");
+            list.empty();
+
+            $.each(user_list, function(index, username) {
+               console.log(index + username)
+               if (username === selfname) {
+                  list.append('<li><b>' + username + '</b></li>')
+                  console.log("adding self");
+               }
+               else {
+                  list.append('<li>' + username + '</li>')
+                  console.log("adding other");
+               }
+            });
+         }
+
       </script>
-		
-   </head>
-   <body>
-   
-      <div id="sse">
-         <a href="javascript:send()">Run WebSocket</a>
+
+      <h1>Test Client</h1>
+      <div id="status">
+         <p id="status">Status = Disconnected</p>
+      </div>
+      <div id="ws_control">
+         <a href="javascript:connect()">Connect</a>
+         <a href="javascript:disconnect()">Disconnect</a>
+      </div>
+      <div id="users">
+         <p id="selfname"> Username = </p>
+         <p> User List </p>
+         <ol id="list">
+         </ol>
+         <p> End </p>
       </div>
       
    </body>
