@@ -1,0 +1,29 @@
+// ws open response
+{
+	"type": "connected",
+	"data": "username"
+}
+
+// game list
+{
+	"type": "gameList",
+	"data": {
+		"game1": [ player1, player2 ],
+		"game2": [ player3, player4, player5 ]
+	}
+}
+
+// user list
+{
+	"type": "userlist",
+	"data": [ user1, user2, user3 ]
+}
+
+// join game response
+{
+	"type": "joingame",
+	"data": {
+		"status": true/false,
+		"gameName": gameName
+	}
+}

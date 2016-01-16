@@ -1,16 +1,40 @@
 function handle(json) {
-	var msgType = json.msgType;
+	var type = json["type"];
 
-	if (json.msgType === "connected") {
-		selfname = json.username;
+	if (type === "connected") {
+		selfname = json["data"];
 		$("p#self-name").text("Username = " + selfname);
 	}
-	else if (json.msgType === "userlist") {
-		console.log("updating user list");
-		updateUserList(json.userlist)
+	else if (type === "userlist") {
+		console.log("-updating user list");
+		updateUserList(json["data"])
 	}
-	else if (json.msgType === "gamelist") {
-		console.log("updating game list");
-		updateGameList(json.gamelist);
+	else if (type === "gamelist") {
+		console.log("-updating game list");
+		updateGameList(json["data"]);
+	}
+	else if (type === "joingame") {
+		var data = json["data"]
+
+		if (data["status"]) {
+      		selfgamename = data["gameName"];
+      		$("p#current-game").text("Game = " + data["gameName"]);
+      		var button = $("button#game-" + selfgamename);
+      		button.text("Leave");
+      		button.toggleClass("join-game-button", false);
+      		button.toggleClass("leave-game-button", true);
+		}
+	}
+	else if (type === "leavegame") {		
+		var data = json["data"]
+
+		if (data["status"]) {
+      		selfgamename = null;
+      		$("p#current-game").text("Game = ");
+      		var button = $("button#game-" + selfgamename);
+      		button.text("Join");
+      		button.toggleClass("join-game-button", true);
+      		button.toggleClass("leave-game-button", false);
+		}
 	}
 }

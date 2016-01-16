@@ -2,22 +2,19 @@ package server;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.json.JSONObject;
+import lombok.Data;
+import server.observer.Observer;
+import server.utility.JSONBuilder;
 
-import server.handlers.MessageHandler;
-
+@Data
 public class Server {
-    private static final Server INSTANCE = new Server();
-    private final MessageHandler handler = MessageHandler.getInstance();
+    private static final Server instance = new Server();
 
-    private Set<Socket> sockets = new HashSet<>();
-    private Map<String, Game> games = new HashMap<>();
+    private final Observer observer = Observer.getInstance();
+
+    private Map<String, Socket> users = new HashMap<>();
 
     /**
      * Private constructor to prevent additional servers being created
@@ -27,7 +24,7 @@ public class Server {
     }
 
     public static Server getInstance() {
-        return INSTANCE;
+        return instance;
     }
 
     /**
@@ -35,18 +32,14 @@ public class Server {
      * updated user list to all.
      * 
      * @param socket
-     *            user socket that is conencting
+     *            user socket that is connecting
      * @throws IOException
      */
     public void join(Socket socket) throws IOException {
-        sockets.add(socket);
+        users.put(socket.session.getId(), socket);
         // send reply message
-        JSONObject object = new JSONObject();
-        object.put("msgType", "connected");
-        object.put("username", socket.session.getId());
-        socket.session.getBasicRemote().sendText(object.toString());
-        sendUserList();
-        sendGameList();
+        socket.session.getBasicRemote().sendText(JSONBuilder.build("connected", socket.session.getId()));
+        observer.update();
     }
 
     /**
@@ -57,8 +50,8 @@ public class Server {
      * @throws IOException
      */
     public void leave(Socket socket) throws IOException {
-        sockets.remove(socket);
-        sendUserList();
+        users.remove(socket.session.getId());
+        observer.update();
     }
 
     /**
@@ -69,64 +62,20 @@ public class Server {
      * @throws IOException
      */
     public void sendAll(String message) throws IOException {
-        for (Socket s : sockets) {
+        System.out.println("sending all: " + message);
+        for (Socket s : users.values()) {
             s.session.getBasicRemote().sendText(message);
         }
     }
 
     /**
-     * Send user list to all connected users
+     * Send message to specified user
      * 
+     * @param socket
+     * @param message
      * @throws IOException
      */
-    public void sendUserList() throws IOException {
-        JSONObject object = new JSONObject();
-        object.put("msgType", "userlist");
-        object.put("userlist", getUserList());
-        System.out.println("sending user list");
-        sendAll(object.toString());
-    }
-
-    /**
-     * Get list of all connected users
-     * 
-     * @return
-     *         list of users
-     */
-    public List<String> getUserList() {
-        return sockets.stream().map(x -> x.session.getId()).collect(Collectors.toList());
-    }
-
-    /**
-     * Create a game with specified name
-     * 
-     * @param gameName
-     *            game name
-     * @throws IOException
-     */
-    public void createGame(String gameName) throws IOException {
-        if (gameName.equals("") || games.containsKey(gameName)) {
-            return;
-        }
-        games.put(gameName, new Game(gameName));
-        sendGameList();
-    }
-
-    public void sendGameList() throws IOException {
-        JSONObject object = new JSONObject();
-        object.put("msgType", "gamelist");
-        object.put("gamelist", getGameList());
-        System.out.println(object.toString());
-        sendAll(object.toString());
-    }
-
-    /**
-     * Get list of all games
-     * 
-     * @return
-     *         list of game names
-     */
-    public Map<String, String[]> getGameList() {
-        return games.entrySet().stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().getPlayerNames()));
+    public void send(Socket socket, String message) throws IOException {
+        socket.session.getBasicRemote().sendText(message);
     }
 }

@@ -1,28 +1,59 @@
+var selfname = null;
+var selfgamename = null;
+
 $(document).ready(function() {
    $("button#ws-connect").click(function() {
-      console.log("connect clicked");
       connect();
    });
 
    $("button#ws-disconnect").click(function() {
-      console.log("disconnect clicked");
       disconnect();
    });
 
    $("button#game-create").click(function() {
-      console.log("creating game");
+      console.log("+creating game");
       var inputBox = $("input#game-name")
       var gamename = inputBox.val()
       inputBox.val('')
-      createGame(gamename);
-   })
+      createGame(selfname, gamename);
+   });
+
+   $("ol#game-list").on("click", ".join-game-button", function() {
+      if (selfgamename != null) {
+         return;
+      }
+      var gamename = $(this).attr('id').replace("game-", "");
+      console.log("+joining game: " + gamename);
+      joinGame(selfname, gamename);
+   });
+
+   $("ol#game-list").on("click", ".leave-game-button", function() {
+      var gamename = $(this).attr('id').replace("game-", "");
+      console.log("+leaving game: " + gamename);
+      leaveGame(selfname, gamename);
+   });
+
 });
 
-var selfname = "";
+function getUserList() {
+   var message = {
+      "type": "user",
+      "data": {
+         "action": "getList"
+      
+}   };
+   ws.send(JSON.stringify(message));
+};
 
-function joinGame(element) {
-
-}
+function getGameList() {
+   var message = {
+      "type": "game",
+      "data": {
+         "action": "getList"
+      }
+   };
+   ws.send(JSON.stringify(message));
+};
 
 function updateUserList(userList) {
    var list = $("ol#user-list");
@@ -53,11 +84,9 @@ function updateGameList(gameList) {
       return;   
    }
    
-   console.log(gameList)
    var gameNames = Object.keys(gameList).sort();
 
    $.each(gameNames.sort(), function(index, gameName) {
-      console.log("Parsing game: " + gameName)
       // list.append("<li>" + gameName + "<button class='join-game-button'>Join</button></li>");
       var item = "<li>" + gameName + " - ";
       var players = gameList[gameName]
@@ -65,11 +94,21 @@ function updateGameList(gameList) {
          item = item + "<i>none </i>"
       }
       else {
-         $.each(players.sort()), function(index, playerName) {
-            item = item + playerName + " "
-         }
+         $.each(players.sort(), function(index, playerName) {
+            if (playerName === selfname) {
+               item = item + "<b>" + playerName + "</b> "
+            }
+            else {
+               item = item + playerName + " "
+            }
+         });
       }
-      item = item + "<button class='join-game-button'>Join</button></li>"
+      if (gameName === selfgamename) {
+         item = item + "<button id='game-" + gameName + "' class='leave-game-button'>Leave</button></li>"
+      }
+      else {
+         item = item + "<button id='game-" + gameName + "' class='join-game-button'>Join</button></li>"
+      }
       list.append(item);
    });
 }

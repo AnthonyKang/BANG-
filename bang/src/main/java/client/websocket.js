@@ -2,7 +2,7 @@ var ws = null;
 
 // connect to ws
 function connect() {
-   console.log("connecting");
+   console.log("+connecting");
    if (getWsStatus()) {
       console.log("already open");
       return;
@@ -20,29 +20,28 @@ function connect() {
       var msg = evt.data;
       console.log("received: " + msg);
       var obj = JSON.parse(msg);
-      console.log("message type: " + obj.msgType);
       handle(obj);
    };
       
    ws.onclose = function() {
+
       $("p#connection-status").text("Status = Disconnected");
       $("p#self-name").text("Username = ");
       $("div#info").attr("style", "visibility: hidden")
+      ws = null
       console.log("ws closed")
    };
 }
 
 // disconnect from ws
 function disconnect() {
-   if (!ws) {
-      return;
-   }
    ws.close();
-   $("ol#user-list").empty();
-   ws = null;
+   selfname = null;
+   selfgamename = null;
 }
 
 // return true if open; false if closed
 function getWsStatus() {
+   // TODO: useless if connection fails
    return ws != null
 }

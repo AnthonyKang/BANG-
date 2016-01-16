@@ -11,12 +11,12 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.json.JSONObject;
 
-import server.handlers.MessageHandler;
+import server.handlers.MasterHandler;
 
 @ServerEndpoint("/testsocket")
 public class Socket {
     public Session session;
-    private final MessageHandler handler = MessageHandler.getInstance();
+    private final MasterHandler handler = MasterHandler.getInstance();
 
     @OnOpen
     public void onOpen(Session session) throws IOException {
@@ -26,7 +26,7 @@ public class Socket {
     }
 
     @OnMessage
-    public void onMessage(String message, Session session) throws IOException {
+    public void onMessage(String message, Session session) throws Exception {
         System.out.println("Message received: " + message);
         // TestServer.getInstance().sendAll(message);
         handler.handle(new JSONObject(message));
