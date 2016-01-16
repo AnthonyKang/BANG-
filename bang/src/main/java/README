@@ -1,6 +1,11 @@
 To run server:
-mvn jetty:run
+mvn jetty:run in directory with pom.xml
 
 To run client:
-Open test.html. (Open multiple for multiple clients)
-Click link to send message to server.  Server sends back same message to all connected clients.  Message appears on all pages.
+Open test.html under client folder. (Open more for multiple clients)
+
+Current features:
+-Connect/Disconnect to server
+-Show user list
+-Show game list
+-Create game
