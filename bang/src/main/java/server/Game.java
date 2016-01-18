@@ -2,7 +2,9 @@ package server;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
@@ -87,8 +89,7 @@ public class Game {
      * @return
      *         array of player names
      */
-    public String[] getPlayerNames() {
-        String[] playerNames = new String[players.size()];
-        return players.keySet().toArray(playerNames);
+    public List<String> getPlayerNames() {
+        return players.keySet().stream().collect(Collectors.toList());
     }
 }

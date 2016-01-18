@@ -89,25 +89,27 @@ function updateGameList(gameList) {
    $.each(gameNames.sort(), function(index, gameName) {
       // list.append("<li>" + gameName + "<button class='join-game-button'>Join</button></li>");
       var item = "<li>" + gameName + " - ";
-      var players = gameList[gameName]
+      var players = gameList[gameName];
+      
       if (players.length == 0) {
-         item = item + "<i>none </i>"
+         item = item + "<i>none </i>";
       }
       else {
          $.each(players.sort(), function(index, playerName) {
             if (playerName === selfname) {
-               item = item + "<b>" + playerName + "</b> "
+               item = item + "<b>" + playerName + "</b> ";
             }
             else {
-               item = item + playerName + " "
+               item = item + playerName + " ";
             }
          });
       }
+
       if (gameName === selfgamename) {
-         item = item + "<button id='game-" + gameName + "' class='leave-game-button'>Leave</button></li>"
+         item = item + "<button id='game-" + gameName + "' class='leave-game-button'>Leave</button></li>";
       }
       else {
-         item = item + "<button id='game-" + gameName + "' class='join-game-button'>Join</button></li>"
+         item = item + "<button id='game-" + gameName + "' class='join-game-button'>Join</button></li>";
       }
       list.append(item);
    });

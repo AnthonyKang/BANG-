@@ -2,9 +2,8 @@ package server.handlers;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,17 +76,25 @@ public class GameHandler implements MessageHandler {
      *         list of game names
      * @throws IOException
      */
-    public Map<String, String[]> getGameList() throws IOException {
+    public Map<String, List<String>> getGameList() throws IOException {
+        Map<String, List<String>> gamelist = new HashMap<>();
         Map<String, Socket> users = server.getUsers();
-        for (Entry<String, Game> entry : games.entrySet()) {
-            String[] players = entry.getValue().getPlayerNames();
-            for (String p : players) {
-                if (!users.containsKey(p)) {
-                    entry.getValue().leaveGame(p);
+        games.entrySet().stream().forEach(e -> {
+            List<String> players = e.getValue().getPlayerNames();
+            players.removeIf(x -> {
+                if (!users.containsKey(x)) {
+                    try {
+                        e.getValue().leaveGame(x);
+                    } catch (Exception ex) {
+                        // TODO:
+                    }
+                    return true;
                 }
-            }
-        }
-        return games.entrySet().stream().collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue().getPlayerNames()));
+                return false;
+            });
+            gamelist.put(e.getKey(), players);
+        });
+        return gamelist;
     }
 
     /**
