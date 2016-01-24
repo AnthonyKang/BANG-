@@ -12,9 +12,9 @@ public class Board {
     private List<Player> players;
     private List<Player> dead;
 
-    public Board(int numPlayers, List<Player> players) {
-        this.numPlayers = numPlayers;
+    public Board(List<Player> players) {
         this.players = players;
+        this.numPlayers = players.size();
     }
 
     /**
@@ -80,19 +80,13 @@ public class Board {
      *         next player
      */
     public Player getNextPlayer(Player player) {
-        int index = 0;
         if (player == null) {
-            for (int i = 0; i < numPlayers; i++) {
-                if (players.get(i).getRole() == Role.SHERIFF) {
-                    index = i;
-                    break;
-                }
-            }
+            return players.stream().filter(x -> x.getRole() == Role.SHERIFF).findAny().get();
         }
         else {
-            index = (players.indexOf(player) + 1) % numPlayers;
+            int index = (players.indexOf(player) + 1) % numPlayers;
+            return players.get(index);
         }
 
-        return players.get(index);
     }
 }

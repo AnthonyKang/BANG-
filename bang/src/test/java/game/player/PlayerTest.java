@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import game.cards.Card;
 import game.cards.CardColor;
-import game.cards.Suit;
+import game.cards.CardSuit;
 
 public class PlayerTest {
 
@@ -29,13 +29,13 @@ public class PlayerTest {
     public void testAddCard() {
         Player player = new Player();
 
-        Card card1 = new Card(CardColor.BROWN, 1, Suit.SPADE, "Brown", "", "");
-        Card card2 = new Card(CardColor.GREEN, 1, Suit.SPADE, "Green1", "", "");
-        Card card3 = new Card(CardColor.GREEN, 1, Suit.SPADE, "Green1", "", "");
-        Card card4 = new Card(CardColor.GREEN, 1, Suit.SPADE, "Green2", "", "");
-        Card card5 = new Card(CardColor.BLUE, 1, Suit.SPADE, "Blue1", "", "");
-        Card card6 = new Card(CardColor.BLUE, 1, Suit.SPADE, "Blue1", "", "");
-        Card card7 = new Card(CardColor.BLUE, 1, Suit.SPADE, "Blue2", "", "");
+        Card card1 = new Card(CardColor.BROWN, 1, CardSuit.SPADE, "Brown", "", "");
+        Card card2 = new Card(CardColor.GREEN, 1, CardSuit.SPADE, "Green1", "", "");
+        Card card3 = new Card(CardColor.GREEN, 1, CardSuit.SPADE, "Green1", "", "");
+        Card card4 = new Card(CardColor.GREEN, 1, CardSuit.SPADE, "Green2", "", "");
+        Card card5 = new Card(CardColor.BLUE, 1, CardSuit.SPADE, "Blue1", "", "");
+        Card card6 = new Card(CardColor.BLUE, 1, CardSuit.SPADE, "Blue1", "", "");
+        Card card7 = new Card(CardColor.BLUE, 1, CardSuit.SPADE, "Blue2", "", "");
 
         // add cards to hand
         assertTrue(player.addCard(card1, false));
@@ -61,9 +61,9 @@ public class PlayerTest {
     public void testDiscardCard() {
         Player player = new Player();
 
-        Card card1 = new Card(CardColor.BROWN, 1, Suit.SPADE, "Brown", "", "");
-        Card card2 = new Card(CardColor.GREEN, 1, Suit.SPADE, "Green", "", "");
-        Card card3 = new Card(CardColor.BLUE, 1, Suit.SPADE, "Blue", "", "");
+        Card card1 = new Card(CardColor.BROWN, 1, CardSuit.SPADE, "Brown", "", "");
+        Card card2 = new Card(CardColor.GREEN, 1, CardSuit.SPADE, "Green", "", "");
+        Card card3 = new Card(CardColor.BLUE, 1, CardSuit.SPADE, "Blue", "", "");
 
         // add cards to hand
         player.addCard(card1, false);
@@ -75,9 +75,9 @@ public class PlayerTest {
         assertEquals(player.getHand().size(), 3);
         assertEquals(player.getField().size(), 2);
 
-        Card dCard1 = new Card(CardColor.BROWN, 1, Suit.SPADE, "Brown", "", "");
-        Card dCard2 = new Card(CardColor.BROWN, 1, Suit.SPADE, "Brown", "test", "");
-        Card dCard3 = new Card(CardColor.BLUE, 1, Suit.SPADE, "Blue", "", "");
+        Card dCard1 = new Card(CardColor.BROWN, 1, CardSuit.SPADE, "Brown", "", "");
+        Card dCard2 = new Card(CardColor.BROWN, 1, CardSuit.SPADE, "Brown", "test", "");
+        Card dCard3 = new Card(CardColor.BLUE, 1, CardSuit.SPADE, "Blue", "", "");
 
         assertEquals(dCard1, player.discardCard(dCard1, false));
         assertEquals(null, player.discardCard(dCard1, false));
