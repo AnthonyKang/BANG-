@@ -22,6 +22,9 @@ public class GameController {
         initialize();
     }
 
+    /**
+     * Deals out game to players
+     */
     private void initialize() {
         // deal cards to players
         board.getPlayers().stream().forEach(x -> {
@@ -35,6 +38,35 @@ public class GameController {
         currentPlayer = getNextPlayer(currentPlayer);
     }
 
+    /**
+     * Change game state to next phase
+     */
+    public void nextPhase() {
+        switch (phase) {
+        case BEGINNING:
+            phase = GamePhase.DRAW;
+            break;
+        case DRAW:
+            phase = GamePhase.PLAY;
+            break;
+        case PLAY:
+            phase = GamePhase.END;
+            break;
+        case END:
+            phase = GamePhase.BEGINNING;
+            currentPlayer = getNextPlayer(currentPlayer);
+            break;
+        }
+    }
+
+    /**
+     * Gets next player
+     * 
+     * @param current
+     *            current player
+     * @return
+     *         next player
+     */
     public Player getNextPlayer(Player current) {
         return board.getNextPlayer(current);
     }

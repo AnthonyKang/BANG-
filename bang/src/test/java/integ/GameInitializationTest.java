@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import game.GameController;
@@ -15,14 +16,19 @@ import game.player.Player;
 import game.player.Role;
 
 public class GameInitializationTest {
-    int i = 0;
+    private List<Player> players;
+    private int i = 0;
 
-    @Test
-    public void testThreePlayer() {
-        List<Player> players = new ArrayList<>();
+    @Before
+    public void before() {
+        players = new ArrayList<>();
         players.add(new Player(Role.SHERIFF, getTestCharacter()));
         players.add(new Player(Role.OUTLAW, getTestCharacter()));
         players.add(new Player(Role.RENEGADE, getTestCharacter()));
+    }
+
+    @Test
+    public void testThreePlayer() {
 
         GameController controller = new GameController(players);
 
@@ -43,6 +49,27 @@ public class GameInitializationTest {
 
         assertEquals(GamePhase.BEGINNING, controller.getPhase());
         assertEquals(players.get(0), controller.getCurrentPlayer());
+    }
+
+    @Test
+    public void testGamePhase() {
+        GameController controller = new GameController(players);
+
+        assertEquals(GamePhase.BEGINNING, controller.getPhase());
+        assertEquals(players.get(0), controller.getCurrentPlayer());
+
+        controller.nextPhase();
+        assertEquals(GamePhase.DRAW, controller.getPhase());
+
+        controller.nextPhase();
+        assertEquals(GamePhase.PLAY, controller.getPhase());
+
+        controller.nextPhase();
+        assertEquals(GamePhase.END, controller.getPhase());
+
+        controller.nextPhase();
+        assertEquals(GamePhase.BEGINNING, controller.getPhase());
+        assertEquals(players.get(1), controller.getCurrentPlayer());
     }
 
     private Character getTestCharacter() {
