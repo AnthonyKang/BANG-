@@ -27,9 +27,11 @@ public class GameInitializationTest {
         players.add(new Player(Role.RENEGADE, getTestCharacter()));
     }
 
+    /**
+     * Test if initial conditions are properly initialized
+     */
     @Test
-    public void testThreePlayer() {
-
+    public void testInitialGameSetup() {
         GameController controller = new GameController(players);
 
         // check number of cards dealt to each player
@@ -51,6 +53,9 @@ public class GameInitializationTest {
         assertEquals(players.get(0), controller.getCurrentPlayer());
     }
 
+    /**
+     * Test if game phase rotation and player rotation is working
+     */
     @Test
     public void testGamePhase() {
         GameController controller = new GameController(players);
@@ -70,6 +75,20 @@ public class GameInitializationTest {
         controller.nextPhase();
         assertEquals(GamePhase.BEGINNING, controller.getPhase());
         assertEquals(players.get(1), controller.getCurrentPlayer());
+
+        controller.nextPhase();
+        controller.nextPhase();
+        controller.nextPhase();
+        controller.nextPhase();
+        assertEquals(GamePhase.BEGINNING, controller.getPhase());
+        assertEquals(players.get(2), controller.getCurrentPlayer());
+
+        controller.nextPhase();
+        controller.nextPhase();
+        controller.nextPhase();
+        controller.nextPhase();
+        assertEquals(GamePhase.BEGINNING, controller.getPhase());
+        assertEquals(players.get(0), controller.getCurrentPlayer());
     }
 
     private Character getTestCharacter() {

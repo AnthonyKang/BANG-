@@ -89,13 +89,33 @@ public class Deck {
      * @param fromDiscard
      *            if set, adds discards to deck
      */
-    public void shuffle(boolean fromDiscard) {
+    private void shuffle(boolean fromDiscard) {
         if (fromDiscard) {
             // add cards from discard to deck and clear discards
             deck.addAll(discard);
             discard.clear();
         }
         Collections.shuffle(deck);
+    }
+
+    /**
+     * Gets size of deck
+     * 
+     * @return
+     *         deck size
+     */
+    public int getDeckSize() {
+        return deck.size();
+    }
+
+    /**
+     * Gets size of discard pile
+     * 
+     * @return
+     *         discard size
+     */
+    public int getDiscardSize() {
+        return discard.size();
     }
 
     /**
