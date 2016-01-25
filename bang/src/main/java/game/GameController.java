@@ -14,6 +14,7 @@ public class GameController {
 
     private GamePhase phase = null;
     private Player currentPlayer = null;
+    private int bangCount = 0;
 
     public GameController(List<Player> players) {
         this.board = new Board(players);
@@ -26,16 +27,22 @@ public class GameController {
      * Deals out game to players
      */
     private void initialize() {
-        // deal cards to players
+        dealInitialCards();
+        this.phase = GamePhase.BEGINNING;
+        currentPlayer = getNextPlayer(currentPlayer);
+    }
+
+    /**
+     * Deals out initial cards to every players. Players receive same number of
+     * cards as their life
+     */
+    public void dealInitialCards() {
         board.getPlayers().stream().forEach(x -> {
             for (int i = 0; i < x.getLife(); i++) {
                 Card card = deck.draw();
                 x.addCard(card, false);
             }
         });
-
-        this.phase = GamePhase.BEGINNING;
-        currentPlayer = getNextPlayer(currentPlayer);
     }
 
     /**

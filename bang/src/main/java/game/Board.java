@@ -2,6 +2,7 @@ package game;
 
 import java.util.List;
 
+import game.cards.Card;
 import game.player.Player;
 import game.player.Role;
 import lombok.Data;
@@ -87,6 +88,22 @@ public class Board {
             int index = (players.indexOf(player) + 1) % numPlayers;
             return players.get(index);
         }
-
     }
+
+    /**
+     * Checks if player p2 is within attack range of player p1;
+     * 
+     * @param p1
+     * @param p2
+     * @return
+     */
+    public boolean isWithinDistance(Player p1, Player p2) {
+        Card weapon = p1.getWeapon();
+        // TODO: get weapon attack range
+        int attackRange = 1;
+        // TODO: check blue card modifiers
+
+        return getDistance(p1, p2) <= attackRange;
+    }
+
 }

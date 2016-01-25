@@ -189,4 +189,18 @@ public class Player {
         String cardName = card.getName();
         return field.stream().anyMatch(x -> x.getName().equals(cardName));
     }
+
+    /**
+     * Checks if player can play given card i.e. card is in hand/field
+     * 
+     * @param card
+     *            card to be played
+     * @return
+     *         true if can play
+     */
+    public boolean canPlay(Card card) {
+        // TODO: green cards
+        // TODO: auto fail blue cards
+        return hand.contains(card);
+    }
 }
