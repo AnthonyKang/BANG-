@@ -1,5 +1,5 @@
 package game.cards;
 
-public enum Suit {
+public enum CardSuit {
     SPADE, HEART, CLUB, DIAMOND
 }

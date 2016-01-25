@@ -2,11 +2,13 @@ package game.deck;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.stream.IntStream;
 
 import game.cards.Card;
+import game.cards.CardColor;
+import game.cards.CardSuit;
 import lombok.Data;
 
 @Data
@@ -29,42 +31,22 @@ public class Deck {
 
     private final Stack<Card> deck;
     private final Stack<Card> discard;
-    private final Stack<Card> specialCards; // High Noon and Fistful of Cards
 
     public Deck() {
         deck = new Stack<>();
         discard = new Stack<>();
-        specialCards = new Stack<>();
         initializeDeck();
-        initializeSpecialCards();
     }
 
     /**
      * Build deck using card lists
      */
     private void initializeDeck() {
-        Map<String, String> cardLists = CardLists.getCardLists();
-        cardLists.entrySet().stream().filter(x -> !x.getKey().equals("High Noon") && !x.getKey().equals("Fistful"))
-                .forEach(x -> {
-                    CardListParser parser = new CardListParser(x.getKey(), x.getValue());
-                    List<Card> cards = parser.getCards();
-                    deck.addAll(cards);
-                });
+        IntStream.range(0, 20).forEach(x -> {
+            deck.add(new Card(CardColor.BROWN, 1, CardSuit.SPADE, "Bang", "Bang", "Bang"));
+            deck.add(new Card(CardColor.BROWN, 1, CardSuit.SPADE, "Miss", "Miss", "Miss"));
+        });
         shuffle(false);
-    }
-
-    /**
-     * Build deck for High Noon and Fistful of Cards card lists.
-     */
-    private void initializeSpecialCards() {
-        Map<String, String> cardLists = CardLists.getCardLists();
-        cardLists.entrySet().stream().filter(x -> x.getKey().equals("High Noon") || x.getKey().equals("Fistful"))
-                .forEach(x -> {
-                    CardListParser parser = new CardListParser(x.getKey(), x.getValue());
-                    List<Card> cards = parser.getCards();
-                    specialCards.addAll(cards);
-                });
-        Collections.shuffle(specialCards);
     }
 
     /**
@@ -107,13 +89,33 @@ public class Deck {
      * @param fromDiscard
      *            if set, adds discards to deck
      */
-    public void shuffle(boolean fromDiscard) {
+    private void shuffle(boolean fromDiscard) {
         if (fromDiscard) {
             // add cards from discard to deck and clear discards
             deck.addAll(discard);
             discard.clear();
         }
         Collections.shuffle(deck);
+    }
+
+    /**
+     * Gets size of deck
+     * 
+     * @return
+     *         deck size
+     */
+    public int getDeckSize() {
+        return deck.size();
+    }
+
+    /**
+     * Gets size of discard pile
+     * 
+     * @return
+     *         discard size
+     */
+    public int getDiscardSize() {
+        return discard.size();
     }
 
     /**
